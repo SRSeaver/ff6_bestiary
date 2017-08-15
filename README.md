@@ -1,4 +1,5 @@
-# Final Fantasy VI: Father and Son Data Party
+# Final Fantasy VI
+### Father and Son Data Party
 
 My son has been playing the old SNES game [Final Fantasy VI](https://en.wikipedia.org/wiki/Final_Fantasy_VI) on iOS.  Being one of the truly cherished games from my childhood, we decided to make a fun data project out of it.  It's a great way to expose him to data science and programming with a topic he enjoys.
 
@@ -10,6 +11,7 @@ There are various text categories for each enemy as well, such as their location
 
 #### Bestiary Dataset
 (SNES in parenthesis)
+
 Feature             | Description               | Var Type  | Min           | Max
 --------------------|---------------------------|-----------|---------------|----
 Name                | Mobile version name       | str       | Abaddon       | Zurvan
