@@ -9,6 +9,12 @@ from sklearn.model_selection import train_test_split
 from collections import Counter, defaultdict
 
 
+"""
+NOTE:
+Need to parse text cols like Steal or Drop for rates and items...
+-jp
+"""
+
 # class Monster(object):
 #     def __init__(self, name, **kwargs):
 #         for key, value in kwargs.items():
@@ -77,6 +83,7 @@ def make_df(monster_dict):
     df = add_boss_col(df)
     df = add_ios_col(df)
     df = add_dragon_den_col(df)
+    df = fix_snes_duplicate_names(df)
     # df.drop(['Exp', 'Gil'], axis=1, inplace=True)
     return df
 
@@ -126,32 +133,56 @@ def add_dragon_den_col(df):
     return df
 
 
+def fix_snes_duplicate_names(df):
+    name_counts = df.loc[:, 'SNES_Name'].value_counts()
+    dupes = name_counts[name_counts > 1]
+    dupes.drop('', inplace=True)
+
+    for idx, name in enumerate(df['SNES_Name']):
+        if name in dupes:
+        # if name == 'Phunbaba':
+            count = 0
+            previous_appearances = [re.findall(r'.*'+name+'.*', n) for n in df.iloc[:idx, df.columns.get_loc('SNES_Name')]]
+            count = sum([len(entry) for entry in previous_appearances])
+            if count > 0:
+                name += ' #{c}'.format(c=count+1)
+                df.iloc[idx, df.columns.get_loc('SNES_Name')] = name
+    return df
+
+
 def make_snes_df(df):
     df_snes = df[df['iOS'] == 0]
+    df_snes.reset_index(inplace=True)
     df_snes = df_snes.set_index('SNES_Name')
     return df_snes
 
 
-def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss'):
+def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True):
     x = df[x_axis].values
     y = df[y_axis].values
+    mask = df[mask_var] == 1
 
     fig = plt.figure(figsize=(10,8))
     ax = fig.add_subplot(1,1,1)
-    mask = df[mask_var] == 1
     ax.scatter(x[mask], y[mask], s=115, alpha=.8, color='FireBrick', label=mask_var)
     ax.scatter(x[~mask], y[~mask], s=105, alpha=.7, color='DodgerBlue', label='Normal')
-    # plt.grid()
-    for idx, name in enumerate(df.index.tolist()):
-        ax.annotate(name, (x[idx], y[idx]), fontsize=8)
+    if annotate:
+        y_shift = max(y) * .007
+        for name in df.loc[mask].index:
+            idx = df.index.get_loc(name)
+            ax.annotate(name, (x[idx], y[idx]), xytext=(x[idx], y[idx]+y_shift), verticalalignment='bottom', horizontalalignment='left', fontsize=8)
 
+
+    plt.axhline(np.mean(y), linestyle='--', color='k', alpha=.4, label='mean')
+    plt.axvline(np.mean(x), linestyle='--', color='k', alpha=.4)
     plt.title("Enemies of Final Fantasy VI")
     plt.xlabel(x_axis)
     plt.ylabel(y_axis)
     plt.legend(loc='best')
+    plt.tight_layout()
 
     plt.show()
-    plt.close()
+    # plt.close()
 
 
 def prep_data(target='Boss'):
@@ -215,8 +246,8 @@ def report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.0, random_s
 
     train_scores = np.mean(train_scores)
     test_scores = np.mean(test_scores)
-    print("Train Accuracy: {a:.2f}%".format(a=train_scores*100))
-    print("Test Accuracy: {a:.2f}%\n".format(a=test_scores*100))
+    print("\nMean Train Accuracy: {a:.2f}%".format(a=train_scores*100))
+    print("Mean Test Accuracy: {a:.2f}%\n".format(a=test_scores*100))
 
 
 
@@ -259,8 +290,8 @@ def report_probabilities(df, probabilities, target, p_thresh=.0, above_below='ab
 
 
 def report_scores(mod, X_train, X_test, y_train, y_test):
-    print("\nTrain Accuracy: {a:.2f}%".format(a=mod.score(X_train, y_train)*100))
-    print("Test Accuracy: {a:.2f}%".format(a=mod.score(X_test, y_test)*100))
+    print("Train Accuracy: {a:.2f}%".format(a=mod.score(X_train, y_train)*100))
+    print("Test Accuracy: {a:.2f}%\n".format(a=mod.score(X_test, y_test)*100))
 
 
 
@@ -270,8 +301,8 @@ if __name__ == '__main__':
     monster_dict = load_text('data/FF6_bestiary.txt')
     df_raw = make_df(monster_dict)
     df_snes = make_snes_df(df_raw)
-    plot_scatter(df_snes, 'Level', 'HP', 'Boss')
-    target = 'Boss'
+    plot_scatter(df_snes, 'Level', 'HP', 'Boss', annotate=True)
+    # target = 'Boss'
     # X, y, df_mod = prep_data(target)
 
     # mean_frame = report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.75, random_state=None)
