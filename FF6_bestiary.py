@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
 from collections import Counter, defaultdict
 
 
@@ -157,36 +158,8 @@ def make_snes_df(df):
     return df_snes
 
 
-def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True):
-    x = df[x_axis].values
-    y = df[y_axis].values
-    mask = df[mask_var] == 1
-
-    fig = plt.figure(figsize=(10,8))
-    ax = fig.add_subplot(1,1,1)
-    ax.scatter(x[mask], y[mask], s=115, alpha=.8, color='FireBrick', label=mask_var)
-    ax.scatter(x[~mask], y[~mask], s=105, alpha=.7, color='DodgerBlue', label='Normal')
-    if annotate:
-        y_shift = max(y) * .007
-        for name in df.loc[mask].index:
-            idx = df.index.get_loc(name)
-            ax.annotate(name, (x[idx], y[idx]), xytext=(x[idx], y[idx]+y_shift), verticalalignment='bottom', horizontalalignment='left', fontsize=8)
-
-
-    plt.axhline(np.mean(y), linestyle='--', color='k', alpha=.4, label='mean')
-    plt.axvline(np.mean(x), linestyle='--', color='k', alpha=.4)
-    plt.title("Enemies of Final Fantasy VI")
-    plt.xlabel(x_axis)
-    plt.ylabel(y_axis)
-    plt.legend(loc='best')
-    plt.tight_layout()
-
-    plt.show()
-    # plt.close()
-
-
-def prep_data(target='Boss'):
-    df_mod = df_raw.select_dtypes(include=['int64', 'float64'])
+def prep_data(df, target='Boss'):
+    df_mod = df.select_dtypes(include=['int64', 'float64'])
     y = df_mod.pop(target).values
     X = df_mod.loc[:, df_mod.columns != target].values
 
@@ -209,7 +182,7 @@ def make_model(X_train, y_train, class_weight=None, random_state=None):
     return mod
 
 
-def report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.0, random_state=None):
+def report_mean_results(df_parent, n=10, train_size=.7, p_thresh=.0, random_state=None):
     print("Fitting {n} models to find mean importances and probabilities...".format(n=n))
 
     def update_proba_dict(X, proba_dict):
@@ -220,6 +193,7 @@ def report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.0, random_s
             proba_dict[name].append(probas[df_train.index.get_loc(name)])
         return proba_dict
 
+    X, y, df_mod = prep_data(df_parent, 'Boss')
     importances, train_scores, test_scores = [], [], []
     proba_dict = defaultdict(list, [])
 
@@ -230,26 +204,31 @@ def report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.0, random_s
 
         importances.append(mod.feature_importances_)
         proba_dict = update_proba_dict(X_train, proba_dict)
-        train_scores.append(mod.score(X_train, y_train))
-        test_scores.append(mod.score(X_test, y_test))
+        # train_scores.append(mod.score(X_train, y_train))
+        # test_scores.append(mod.score(X_test, y_test))
+        train_scores.append(f1_score(y_train, mod.predict(X_train), average='weighted'))
+        test_scores.append(f1_score(y_test, mod.predict(X_test), average='weighted'))
+
         report_scores(mod, X_train, X_test, y_train, y_test)
 
-    importances = np.mean(importances, axis=0)
-    report_importances(importances, df_mod)
+    # std = np.std(importances, axis=0)
+    # importances = np.mean(importances, axis=0)
+    # report_importances(importances, df_mod)
+    # plot_importances(None, col_labels=df_mod.columns, importances=importances, err=True, std=std)
 
     for name, probas in proba_dict.items():
         proba_dict[name] = np.mean(probas)
 
     probabilities = pd.DataFrame.from_dict(dict(proba_dict), orient='index')
     probabilities.columns = ['proba_mean']
-    mean_frame = report_probabilities(df_raw, probabilities.sort_index(), target, p_thresh=p_thresh)
+    # print(probabilities.sort_index().head())
+    # print(probabilities)
+    mean_frame = report_probabilities(df_parent.sort_index(), probabilities.sort_index(), 'Boss', p_thresh=p_thresh)
 
-    train_scores = np.mean(train_scores)
-    test_scores = np.mean(test_scores)
-    print("\nMean Train Accuracy: {a:.2f}%".format(a=train_scores*100))
-    print("Mean Test Accuracy: {a:.2f}%\n".format(a=test_scores*100))
-
-
+    print("\nMean Train F1 Score: {:.2f}%".format(np.mean(train_scores)*100))
+    print("Mean Test F1 Score: {:.2f}%".format(np.mean(test_scores)*100))
+    print("\nStd Train F1 Score: {}".format(np.std(train_scores, axis=0)))
+    print("Std Test F1 Score: {}".format(np.std(test_scores, axis=0)))
 
     return mean_frame
 
@@ -283,15 +262,87 @@ def report_probabilities(df, probabilities, target, p_thresh=.0, above_below='ab
     df_thresh = df[thresh_mask]
 
     # report_stats = ['SNES_Name', 'Attack', 'Defense', 'Evasion', 'Speed', 'Boss', 'Proba_'+target, 'Pred_'+target, 'Right_Pred?']
-    report_stats = ['SNES_Name', 'Boss', 'Proba_'+target, 'Pred_'+target, 'Right_Pred?']
+    report_stats = ['Boss', 'Proba_'+target, 'Pred_'+target, 'Right_Pred?', 'Location']
+    if df.index.name != 'SNES_Name':
+        report_stats = ['SNES_Name'] + report_stats
 
     print(df_thresh[report_stats].sort_values('Proba_'+target, ascending=False))
     return df[report_stats].sort_values('Proba_'+target, ascending=False)
 
 
 def report_scores(mod, X_train, X_test, y_train, y_test):
-    print("Train Accuracy: {a:.2f}%".format(a=mod.score(X_train, y_train)*100))
-    print("Test Accuracy: {a:.2f}%\n".format(a=mod.score(X_test, y_test)*100))
+    # print("Train Accuracy: {a:.2f}%".format(a=mod.score(X_train, y_train)*100))
+    # print("Test Accuracy: {a:.2f}%\n".format(a=mod.score(X_test, y_test)*100))
+    print("Train F1 Score: {:.2f}%".format(f1_score(y_train, mod.predict(X_train), average='weighted')*100))
+    print("Test F1 Score: {:.2f}%\n".format(f1_score(y_test, mod.predict(X_test), average='weighted')*100))
+
+
+def plot_importances(mod, col_labels=None, importances=None, n_feats=None, err=False, std=None, color='orange'):
+    print ("\nCalculating feature importances now...")
+    if importances is None:
+        importances = mod.feature_importances_
+        if 'RandomForest' in str(mod):
+            std = np.std([tree.feature_importances_ for tree in mod.estimators_], axis=0) if not std else std
+
+    elif err and std is None:
+        err = False
+
+    idxs = np.argsort(importances)[::-1]
+
+    if col_labels is None:
+        col_labels = {}
+    else:
+        col_labels = {idx: label for idx, label in enumerate(col_labels)}
+
+    n_feats = importances.shape[0] if n_feats is None else n_feats
+
+    print('\nFeature ranking:')
+    for feat in range(n_feats):
+        print("{}. {}: {:.2f}%".format(feat+1, col_labels.get(idxs[feat], idxs[feat]), importances[idxs[feat]]*100))
+
+    # Plot Feats
+    plt.figure(figsize=(10, 8))
+    if err:
+        plt.bar(range(n_feats), importances[idxs[:n_feats]], yerr=std[idxs], align='center', color=color, alpha=.85)
+    else:
+        plt.bar(range(n_feats), importances[idxs[:n_feats]], align='center', color=color, alpha=.85)
+
+    plt.title('Classifying FF VI Bosses - {n} Most Important Features'.format(n=n_feats))
+    xticks = [col_labels.get(idx, idx) for idx in idxs[:n_feats]]
+    plt.xticks(range(n_feats), xticks, rotation=90, fontsize=8, horizontalalignment='center')
+    plt.xlim([-1, n_feats])
+    plt.grid(axis='x')
+    plt.tight_layout()
+    plt.savefig('/Users/jpw/Desktop/ff6_feat_imp.png')
+    plt.show()
+
+
+def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True, mean=True):
+    x = df[x_axis].values
+    y = df[y_axis].values
+    mask = df[mask_var] == 1
+
+    fig = plt.figure(figsize=(10,8))
+    ax = fig.add_subplot(1,1,1)
+    ax.scatter(x[mask], y[mask], s=115, alpha=.8, color='FireBrick', label=mask_var)
+    ax.scatter(x[~mask], y[~mask], s=105, alpha=.7, color='DodgerBlue', label='Normal')
+    if annotate:
+        y_shift = max(y) * .007
+        for name in df.loc[mask].index:
+            idx = df.index.get_loc(name)
+            ax.annotate(name, (x[idx], y[idx]), xytext=(x[idx], y[idx]+y_shift), verticalalignment='bottom', horizontalalignment='left', fontsize=8)
+
+    if mean:
+        plt.axhline(np.mean(y), linestyle='--', color='k', alpha=.4, label='mean')
+        plt.axvline(np.mean(x), linestyle='--', color='k', alpha=.4)
+    plt.title("SNES-only Enemies of Final Fantasy VI")
+    plt.xlabel(x_axis)
+    plt.ylabel(y_axis)
+    plt.legend(loc='best')
+    plt.tight_layout()
+
+    plt.show()
+    # plt.close()
 
 
 
@@ -301,15 +352,58 @@ if __name__ == '__main__':
     monster_dict = load_text('data/FF6_bestiary.txt')
     df_raw = make_df(monster_dict)
     df_snes = make_snes_df(df_raw)
-    plot_scatter(df_snes, 'Level', 'HP', 'Boss', annotate=True)
-    # target = 'Boss'
-    # X, y, df_mod = prep_data(target)
+    # plot_scatter(df_snes, 'Defense', 'Magic_Defense', 'Boss', annotate=False, mean=True)
 
-    # mean_frame = report_mean_results(X, y, df_mod, n=10, train_size=.7, p_thresh=.75, random_state=None)
-    #
+
+    mean_frame = report_mean_results(df_snes, n=15, train_size=.7, p_thresh=0, random_state=None)
+
+    # target = 'Boss'
+    # X, y, df_mod = prep_data(df_snes, target)#
     # X_train, X_test, y_train, y_test, df_train, df_test = split_data(X, y, df_mod, train_size=.7, random_state=462)
     # mod = make_model(X_train, y_train, random_state=462)
     #
+    # print(recall_score(y_test, mod.predict(X_test), average='weighted', pos_label=1))
+    # print(precision_score(y_test, mod.predict(X_test), average='weighted', pos_label=1))
+    # print(f1_score(y_test, mod.predict(X_test), average='weighted', pos_label=1))
     # report_importances(mod.feature_importances_, df_train)
     # mainn = report_probabilities(df_raw, mod.predict_proba(X_train)[:, 1], target, p_thresh=.75)
     # report_scores(mod, X_train, X_test, y_train, y_test)
+
+
+#
+# hypothesis test for boss hp v non-boss/population?
+# In [28]: df['HP'].describe()
+# Out[28]:
+# count      406.000000
+# mean     10317.492611
+# std      16014.262710
+# min          1.000000
+# 25%        515.000000
+# 50%       2761.000000
+# 75%      11450.000000
+# max      65500.000000
+# Name: HP, dtype: float64
+#
+# In [29]: df_snes['HP'].describe()
+# Out[29]:
+# count      366.000000
+# mean      7251.898907
+# std      12627.050617
+# min          1.000000
+# 25%        456.500000
+# 50%       2000.000000
+# 75%       7000.000000
+# max      63000.000000
+# Name: HP, dtype: float64
+#
+# In [30]: dfb['HP'].describe()
+# Out[30]:
+# count       96.000000
+# mean     19841.197917
+# std      18172.690523
+# min        100.000000
+# 25%       3300.000000
+# 50%      14500.500000
+# 75%      30000.000000
+# max      63000.000000
+# Name: HP, dtype: float64
