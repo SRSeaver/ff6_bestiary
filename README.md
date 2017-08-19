@@ -179,23 +179,23 @@ For each enemy in the database the model makes a prediction: is this enemy a bos
 I thought it would be fun to look at these probabilities to see exactly which enemies the model says are the most "boss-like".  Here's a table of the top 15 most probable bosses according to this model, with a full list in the appendix at the end of this post.
 
 ###### Most Probable Bosses
-SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | Location
------------------|--------------|-------------|------------|----------|---------
-1. White Drgn    | Yes          | 95.64%      | Boss       | Yes      | Cultists' Tower
-2. Doom          | Yes          | 95.62%      | Boss       | Yes      | Kefka's Tower (Final Battle)
-3. Blue Drgn     | Yes          | 95.32%      | Boss       | Yes      | Ancient Castle
-4. Sleep         | Yes          | 95.30%      | Boss       | Yes      | Kefka's Tower (Final Battle)
-5. Master Pug    | Yes          | 95.28%      | Boss       | Yes      | Cave to Ancient Castle
-6. Red Dragon    | Yes          | 95.28%      | Boss       | Yes      | Phoenix Cave
-7. Storm Drgn    | Yes          | 95.26%      | Boss       | Yes      | Mt. Zozo
-8. Tiger         | Yes          | 95.21%      | Boss       | Yes      | Kefka's Tower (Final Battle)
-9. Ice Dragon    | Yes          | 95.15%      | Boss       | Yes      | Narshe Cliffs
-10. Gold Drgn    | Yes          | 95.04%      | Boss       | Yes      | Kefka's Tower
-11. Tools        | Yes          | 94.85%      | Boss       | Yes      | Kefka's Tower (Final Battle)
-12. Inferno      | Yes          | 94.80%      | Boss       | Yes      | Kefka's Tower
-13. Short Arm    | Yes          | 94.61%      | Boss       | Yes      | Kefka's Tower (Final Battle)
-14. Striker      | Yes          | 94.57%      | Boss       | Yes      | Kefka's Tower
-15. Face         | Yes          | 94.40%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+Rank | SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | Location
+-----|------------------|--------------|-------------|------------|----------|---------
+1    | White Drgn       | Yes          | 95.64%      | Boss       | Yes      | Cultists' Tower
+2    | Doom             | Yes          | 95.62%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+3    | Blue Drgn        | Yes          | 95.32%      | Boss       | Yes      | Ancient Castle
+4    | Sleep            | Yes          | 95.30%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+5    | Master Pug       | Yes          | 95.28%      | Boss       | Yes      | Cave to Ancient Castle
+6    | Red Dragon       | Yes          | 95.28%      | Boss       | Yes      | Phoenix Cave
+7    | Storm Drgn       | Yes          | 95.26%      | Boss       | Yes      | Mt | Zozo
+8    | Tiger            | Yes          | 95.21%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+9    | Ice Dragon       | Yes          | 95.15%      | Boss       | Yes      | Narshe Cliffs
+10   | Gold Drgn        | Yes          | 95.04%      | Boss       | Yes      | Kefka's Tower
+11   | Tools            | Yes          | 94.85%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+12   | Inferno          | Yes          | 94.80%      | Boss       | Yes      | Kefka's Tower
+13   | Short Arm        | Yes          | 94.61%      | Boss       | Yes      | Kefka's Tower (Final Battle)
+14   | Striker          | Yes          | 94.57%      | Boss       | Yes      | Kefka's Tower
+15   | Face             | Yes          | 94.40%      | Boss       | Yes      | Kefka's Tower (Final Battle)
 
 
 
