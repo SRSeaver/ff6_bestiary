@@ -94,22 +94,22 @@ Std.| 0.0083       | 0.0220      | -.0137
 The most predictive feature in the dataset for determining whether an enemy was a boss or not was (\*drumroll emoji\*)... _Experience Won_ and _Gil Won_!  
 
 ###### Feature Ranks
-Feature           | Importance
-------------------|-----------
-\1. Experience     | 31.51%
-\2. Gil            | 22.24%
-3. MP             | 14.38%
-4. HP             | 10.90%
-5. Level          | 5.29%
-6. Magic_Attack   | 5.25%
-7. Speed          | 2.58%
-8. Attack         | 1.98%
-9. Defense        | 1.36%
-10. Evasion       | 1.34%
-11. Dragon_Den    | 1.02%
-12. Magic_Defense | 0.93%
-13. iOS           | 0.72%
-14. Magic_Evasion | 0.49%
+Rank | Feature           | Importance
+-----|-------------------|-----------
+1    | Experience        | 31.51%
+2    | Gil               | 22.24%
+3    | MP                | 14.38%
+4    | HP                | 10.90%
+5    | Level             | 5.29%
+6    | Magic_Attack      | 5.25%
+7    | Speed             | 2.58%
+8    | Attack            | 1.98%
+9    | Defense           | 1.36%
+10   | Evasion           | 1.34%
+11   | Dragon_Den        | 1.02%
+12   | Magic_Defense     | 0.93%
+13   | iOS               | 0.72%
+14   | Magic_Evasion     | 0.49%
 
 This is somewhat surprising initially because our first hunch was that the characteristics of the bosses, such as their magic attack or physical defense or evasion would separate them from normal enemies.  But this is where understanding the data comes into play.  
 
