@@ -226,27 +226,27 @@ As an example if we measured the difference between bosses' _Experience_ given a
 
 
 ##### Means to an End
-(Bold if one mean at least twice the other)
+(Bold if at least double the other)
 
  Attribute    | Non-Bosses Mean | Bosses Mean | Larger | X-times Larger
 --------------|-----------------|-------------|--------|--------------
-Level         | 28.6            | 42.1        | Boss   | 1.4x
 Exp           | __1,029.4__     | 4.1         | Non    | __251.0x__
-Gil           | 577.1           | 365* (53.8) | Non    | 1.5x* (10.7x)
+Gil (No KatanaSoul) __*__ | __577.1__ | 53.8        | Non    | __10.7x__
 HP            | 2,775.7         | __19,841__  | Boss   | __7.1x__
 MP            | 1,392.2         | __7,101.6__ | Boss   | __5.1x__
-Speed         | 34.2            | 42.8        | Boss   | 1.2x
-Attack        | 15.6            | 23          | Boss   | 1.4x
-Magic_Attack  | 10.3            | 8.8         | Non    | 1.1x
-Defense       | 112.0           | 116.4       | Boss   | 1.0x
 Evasion       | 10.4            | 5.8         | Non    | 1.8x
-Magic_Defense | 139.3           | 143.6       | Boss   | 1.0x
+Level         | 28.6            | 42.1        | Boss   | 1.4x
+Attack        | 15.6            | 23          | Boss   | 1.4x
+Speed         | 34.2            | 42.8        | Boss   | 1.2x
+Magic_Attack  | 10.3            | 8.8         | Non    | 1.1x
 Magic_Evasion | 1.85            | 1.6         | Non    | 1.1x
-Sample Size   | 272             | 96          | Non    | 2.8x
+Defense       | 112.0           | 116.4       | Boss   | 1.0x
+Magic_Defense | 139.3           | 143.6       | Boss   | 1.0x
+Sample Size   | 272             | 96          | Non    | (2.8x)
 
-*Only one enemy, "KatanaSoul,"  gives above 1,300 GIL.  He gives 30,000 Gil which skews the results above.  Taking him out the mean Gil given by bosses becomes a paltry 53 Gil.  
+__*__ Only seven bosses give over 100 gil. Only one boss, _KatanaSoul_, gives appreciable gil.  In fact, he gives 30,000 Gil which not only skews the entire category for bosses but is also the _single largest purse rewarded by any enemy in the entire SNES game_ (second highest in the mobile versions).  Taking him out, the mean gil given by bosses becomes a paltry 53 gil which is far more representative of the other 95 Bosses.  
 
-This breakdown of the means per category between the two classes of enemies gives us great insight into what we could investigate with a hypothesis test.  
+This breakdown of the means per category between the two classes of enemies gives us great insight into what we could investigate with a hypothesis test.  It is not surprising to see the categories of the four largest percentage differences are also the four features the model identified as being most important in predicting whether an enemy is a boss or not.
 
 
 (in progress)
