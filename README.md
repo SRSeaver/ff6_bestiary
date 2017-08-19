@@ -86,14 +86,15 @@ Run | Train F1 (%) | Test F1 (%) | ∆
 13  | 94.50        | 91.28       | 3.22
 14  | 94.45        | 95.96       | -1.51
 15  | 95.13        | 92.59       | 2.54
-Avg.| 94.55        | 92.13       | 2.42
+__Avg.__ | __94.55__ | __92.13__ | __2.42__
 Std.| 0.0083       | 0.0220      | -.0137
 
 
 ##### Feature Importance
-The most predictive feature in the dataset for determining whether an enemy was a boss or not was (drumroll emoji)... _Experience Won_ and _Gil Won_!  
+The most predictive feature in the dataset for determining whether an enemy was a boss or not was (\*drumroll emoji\*)... _Experience Won_ and _Gil Won_!  
 
 ###### Feature Ranks
+
 Feature           | Importance
 ------------------|-----------
 1. Experience     | 31.51%
