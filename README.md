@@ -138,6 +138,7 @@ The classification results improve as well, showing that the SNES-only database 
 
 ###### SNES Enemies Only Mean Predictions
 Here are the results from running the model fifteen times with only the SNES enemies list.
+
 Measure | Train F1 | Test F1 | ∆
 --------|----------|---------|---
 Mean    | 98.14%   | 96.87%  | 1.27
