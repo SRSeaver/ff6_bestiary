@@ -225,31 +225,36 @@ Hypothesis testing is one way we can determine whether or not two groups or clas
 As an example if we measured the difference between bosses' _Experience_ given and non-bosses, we'd find that yes, there is clear statistical evidence that they are different groups (one being basically zero, the other in the hundreds or thousands).
 
 
-###### Means to an End
- Attribute    | Non-Bosses Mean | Bosses Mean | ∆
---------------|-----------------|-------------|---
-Level         | 28.6            | 42.1        |
-Exp           | 1029.4          | 4.1         |
-Gil           | 577.1           | 365         |
-HP            | 2775.7          | 19841.1     |
-MP            | 1392.2          | 7101.6      |
-Speed         | 34.2            | 42.8        |
-Attack        | 15.6            | 23
-Magic_Attack  | 10.3            | 8.8
-Defense       | 112.0           | 116.4
-Evasion       | 10.4            | 5.8
-Magic_Defense | 139.3           | 143.6
-Magic_Evasion | 1.85            | 1.6
-Sample Size   | 96              | 272
+##### Means to an End
+(Bold if one mean at least twice the other)
+ Attribute    | Non-Bosses Mean | Bosses Mean | Larger | X-times Larger
+--------------|-----------------|-------------|--------|--------------
+Level         | 28.6            | 42.1        | Boss   | 1.4x
+Exp           | __1,029.4__     | 4.1         | Non    | __251.0x__
+Gil           | 577.1           | 365* (53.8) | Non    | 1.5x* (10.7x)
+HP            | 2,775.7         | __19,841__  | Boss   | __7.1x__
+MP            | 1,392.2         | __7,101.6__ | Boss   | __5.1x__
+Speed         | 34.2            | 42.8        | Boss   | 1.2x
+Attack        | 15.6            | 23          | Boss   | 1.4x
+Magic_Attack  | 10.3            | 8.8         | Non    | 1.1x
+Defense       | 112.0           | 116.4       | Boss   | 1.0x
+Evasion       | 10.4            | 5.8         | Non    | 1.8x
+Magic_Defense | 139.3           | 143.6       | Boss   | 1.0x
+Magic_Evasion | 1.85            | 1.6         | Non    | 1.1x
+Sample Size   | 272             | 96          | Non    | 2.8x
 
+*Only one enemy, "KatanaSoul,"  gives above 1,300 GIL.  He gives 30,000 Gil which skews the results above.  Taking him out the mean Gil given by bosses becomes a paltry 53 Gil.  
 
+This breakdown of the means per category between the two classes of enemies gives us great insight into what we could investigate with a hypothesis test.  
 
 
 (in progress)
 
 
 
-
+<BR>
+<BR>
+<BR>
 
 
 
