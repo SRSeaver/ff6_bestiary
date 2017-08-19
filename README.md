@@ -227,6 +227,7 @@ As an example if we measured the difference between bosses' _Experience_ given a
 
 ##### Means to an End
 (Bold if one mean at least twice the other)
+
  Attribute    | Non-Bosses Mean | Bosses Mean | Larger | X-times Larger
 --------------|-----------------|-------------|--------|--------------
 Level         | 28.6            | 42.1        | Boss   | 1.4x
