@@ -149,33 +149,33 @@ Std.    | .0047    | .0124   | -.0076
 ### Visual Investigation
 With the results from our model in hand, it is usually fun to do some visual inspection of the features or trends reported above.
 
-###### Experience as Level Increases
+##### Experience as Level Increases
 With bosses colored red and non-bosses blue, we see that bosses just don't give experience regardless of how high their level is.  As non-bosses become higher in level they give more experience.  This plot confirms what our model picked up.
 
 ![Most predictive feature for bosses is EXP -- they give none](images/ff6_boss_lvl_exp.png)
 
 
-###### Bosses Have More HP and MP
+##### Bosses Have More HP and MP
 Referencing the feature importances above, _HP_ and _MP_ are ranked 3rd and 4th, respectively.  This makes sense as we'd expect bosses to have more of both statistics since they are meant to be more challenging enemies.  Their values in these two stats just happens to vary some, which makes sense, while _Experience_ does not, giving it the stronger predictive power.  The mean for the SNES-only population of enemies is marked by dashed lines for both axes.  We see an indistinguishable cluster of non-bosses (blue) in the bottom left of the plot, while bosses are distributed at a much higher range of both HP and MP.  We will quantify this below.
 
 ![Bosses tend to be far above the mean in both HP and MP](images/ff6_boss_hp_mp.png)
 
 
-###### Bosses Have More HP per Level
+##### Bosses Have More HP per Level
 To belabor the point, bosses have more health per level as we'd expect from the previous plot. The same is true for MP.
 
 ![Bosses tend to be higher level and have more HP per level](images/ff6_boss_lvl_hp.png)
 
 
-###### Bosses Are Average in Other Attributes
+##### Bosses Are Average in Other Attributes
 We'd think bosses would have higher values in all stats than normal enemies, but this isn't the case.  It's only true for HP and MP.  Here we look at their _Defense_ and _Magic Defense_ and see no separation at all from non-bosses.
 
 ![Bosses have average values in def and magic defense](images/ff6_boss_def_magdef.png)
 
 
 ### The Probability of Being a Boss
-(Hint: if named Jonpaul, P > .99)  
-For each enemy in the database the model makes a prediction: is this enemy a boss or not?  While the final classification is binary ('yes' or 'no'), the degree to which the model "believes" in this classification is not.  For each enemy the model assigns a probability that they are indeed what the model has classified them as; in other words, the model tells us _how confident_ it is about each enemy being a boss or not.  
+_(Hint: if named Jonpaul, P > .99)_  
+For each enemy in the database the model makes a prediction: is this enemy a boss or not?  While the final classification is binary (_yes_ or _no_), the degree to which the model "believes" in this classification is not.  For each enemy the model assigns a probability that they are indeed what the model has classified them as; in other words, the model tells us _how confident_ it is about each enemy being a boss or not.  
 
 I thought it would be fun to look at these probabilities to see exactly which enemies the model says are the most "boss-like".  Here's a table of the top 15 most probable bosses according to this model, with a full list in the appendix at the end of this post.
 
@@ -188,7 +188,7 @@ Rank | SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | L
 4    | Sleep            | Yes          | 95.30%      | Boss       | Yes      | Kefka's Tower (Final Battle)
 5    | Master Pug       | Yes          | 95.28%      | Boss       | Yes      | Cave to Ancient Castle
 6    | Red Dragon       | Yes          | 95.28%      | Boss       | Yes      | Phoenix Cave
-7    | Storm Drgn       | Yes          | 95.26%      | Boss       | Yes      | Mt | Zozo
+7    | Storm Drgn       | Yes          | 95.26%      | Boss       | Yes      | Mt. Zozo
 8    | Tiger            | Yes          | 95.21%      | Boss       | Yes      | Kefka's Tower (Final Battle)
 9    | Ice Dragon       | Yes          | 95.15%      | Boss       | Yes      | Narshe Cliffs
 10   | Gold Drgn        | Yes          | 95.04%      | Boss       | Yes      | Kefka's Tower
@@ -203,18 +203,18 @@ Rank | SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | L
 For fun let's look at the least likely bosses.
 
 ###### Least Probable Bosses
-SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | Location
------------------|--------------|-------------|------------|----------|---------
-1. Vindr         | No           | 3.06%       | No         | Yes      | Owzer's Mansion (WoR)
-2. Ralph         | No           | 3.18%       | No         | Yes      | Grass Areas (WoR)
-3. Muus          | No           | 3.18%       | No         | Yes      | Grass Areas (WoR)
-4. Maliga        | No           | 3.19%       | No         | Yes      | Figaro Continent (WoR)
-5. Exoray        | No           | 3.20%       | No         | Yes      | Darril's Tomb (WoR)
-6. Wild Cat      | No           | 3.22%       | No         | Yes      | Owzer's Mansion (WoR)
-7. Poppers       | No           | 3.22%       | No         | Yes      | Umaro's Cave
-8. Iron Fist     | No           | 3.23%       | No         | Yes      | Kohlingen Forest
-9. Osprey        | No           | 3.23%       | No         | Yes      | Southern Continent (WoR)
-10. Gigan Toad   | No           | 3.24%       | No         | Yes      | Southern Continent (WoR)
+Rank | SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | Location
+-----|------------------|--------------|-------------|------------|----------|---------
+1    | Vindr            | No           | 3.06%       | Normal     | Yes      | Owzer's Mansion (WoR)
+2    | Ralph            | No           | 3.18%       | Normal     | Yes      | Grass Areas (WoR)
+3    | Muus             | No           | 3.18%       | Normal     | Yes      | Grass Areas (WoR)
+4    | Maliga           | No           | 3.19%       | Normal     | Yes      | Figaro Continent (WoR)
+5    | Exoray           | No           | 3.20%       | Normal     | Yes      | Darril's Tomb (WoR)
+6    | Wild Cat         | No           | 3.22%       | Normal     | Yes      | Owzer's Mansion (WoR)
+7    | Poppers          | No           | 3.22%       | Normal     | Yes      | Umaro's Cave
+8    | Iron Fist        | No           | 3.23%       | Normal     | Yes      | Kohlingen Forest
+9    | Osprey           | No           | 3.23%       | Normal     | Yes      | Southern Continent (WoR)
+10   | Gigan Toad       | No           | 3.24%       | Normal     | Yes      | Southern Continent (WoR)
 
 These results fit well with common sense.  Many of the top fifteen probable bosses are dragons or are found in Kefka's Tower, the game's final dungeon.  Indeed six of the fifteen most probable are from the final battle itself.  Conversely the least likely to be bosses are nearly all random Overworld enemies.
 
