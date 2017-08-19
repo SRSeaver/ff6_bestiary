@@ -94,11 +94,10 @@ Std.| 0.0083       | 0.0220      | -.0137
 The most predictive feature in the dataset for determining whether an enemy was a boss or not was (\*drumroll emoji\*)... _Experience Won_ and _Gil Won_!  
 
 ###### Feature Ranks
-
 Feature           | Importance
 ------------------|-----------
-1. Experience     | 31.51%
-2. Gil            | 22.24%
+\1. Experience     | 31.51%
+\2. Gil            | 22.24%
 3. MP             | 14.38%
 4. HP             | 10.90%
 5. Level          | 5.29%
