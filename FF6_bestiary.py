@@ -372,17 +372,17 @@ def hist_plots(data=[], bins=25, color=sns.color_palette('deep')[4]):
 
 
 
-
-
-
 if __name__ == '__main__':
     monster_dict = load_text('data/FF6_bestiary.txt')
     df_raw = make_df(monster_dict)
     df_snes = make_snes_df(df_raw)
     # plot_scatter(df_snes, 'Defense', 'Magic_Defense', 'Boss', annotate=False, mean=True)
-
+    # qq_plots([df_snes['Exp'], df_snes['Gil'], df_snes['HP'], df_snes['Defense']])
+    # hist_plots([df_snes['Exp'], df_snes['Gil'], df_snes['HP'], df_snes['Defense']], bins=30, color=sns.color_palette('deep')[3])
 
     # mean_frame = report_mean_results(df_snes, n=15, train_size=.7, p_thresh=0, random_state=None)
+
+
 
     # target = 'Boss'
     # X, y, df_mod = prep_data(df_snes, target)#
