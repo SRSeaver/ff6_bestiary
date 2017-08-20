@@ -1,6 +1,6 @@
-# Final Fantasy VI
-### Father and Son Data Party
+# Final Fantasy VI  
 
+### Father and Son Data Party
 My son has been playing the old SNES game [Final Fantasy VI](https://en.wikipedia.org/wiki/Final_Fantasy_VI) on iOS.  Being one of the truly cherished games from my childhood, we decided to make a fun data project out of it.  It's a great way to expose him to data science and programming with a topic he enjoys.
 
 For any RPG one of the best sources of data is its (likely) extensive bestiary.  Final Fantasy VI is no exception, upping the enemy count from its predecessors as well as the range of their abilities.  The mobile re-releases of the game in the 2010s brought numerous end-game enemy additions for high level players.  After searching online we found a pair of text file bestiary guides, one covering only the original SNES enemies and one with the recent mobile version enemy roster.  We chose [the modern version](data/FF6_bestiary.txt) which would allow us to do some investigation of the newly included baddies.  
@@ -272,6 +272,12 @@ MP       | 4.75
 Defense  | -1.59
 
 Pretending these features did come from roughly normal distributions, we'd be able to reject the null hypothesis that bosses and non-bosses have indistinguishable statistics in the four most "important" categories according to our model.  Again, intuitively this fits well -- the model deemed these as the most predictive features so it is sensible to see that there are real distinctions between bosses and non-bosses in them.  Defense would not pass our threshold of the 95-percent confidence level, meaning we could not say statistically that a boss' defense was different than a non-bosses beyond chance.
+
+
+### To-Do
+1. Parse text features like _Location_, _Steal_, or _Drop_ to get the items, rates, etc. for each and dummy those for more insight.  I bet immunities scale well with bosses....
+
+
 
 
 <BR>
