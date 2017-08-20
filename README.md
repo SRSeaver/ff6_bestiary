@@ -176,7 +176,6 @@ We'd think bosses would have higher values in all stats than normal enemies, but
 
 
 ### The Probability of Being a Boss
-_(Hint: if named Jonpaul, P > .99)_  
 For each enemy in the database the model makes a prediction: is this enemy a boss or not?  While the final classification is binary (_yes_ or _no_), the degree to which the model "believes" in this classification is not.  For each enemy the model assigns a probability that they are indeed what the model has classified them as; in other words, the model tells us _how confident_ it is about each enemy being a boss or not.  
 
 I thought it would be fun to look at these probabilities to see exactly which enemies the model says are the most "boss-like".  Here's a table of the fifteen most probable bosses according to this model (again, after aggregating fifteen randomly selected runs), with a full list in the appendix at the end of this post.
