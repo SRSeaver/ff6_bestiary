@@ -124,17 +124,19 @@ There is a distinction to make here, however.  As mentioned earlier the mobile v
 Doing so gives a smaller dataset of only 366 enemies with 96 bosses, and ups the predictive ability of the model since only one of the bosses of those 96 gives experience.  
 
 ###### SNES Enemies Only Dataset
-Category      | Count | Num. Giving Exp | % Giving Exp
---------------|-------|-----------------|-------------
-Total Enemies | 366   | 246             | 67.2%
-Non-Bosses    | 270   | 245             | 90.7%
-Bosses        | 96    | Yes              | 1.04%
+Category      | Count | Num. Giving Exp | % Giving Exp | Num. Giving Gil | % Giving Gil
+--------------|-------|-----------------|--------------|-----------------|-------------
+Total Enemies | 366   | 246             | 67.2%        | 249             | 68.0%
+Non-Bosses    | 270   | 245             | 90.7%        | 238             | 88.1%
+Bosses        | 96    | 1               | 1.04%        | 11              | 11.4%
+
 
 With this trimmed, SNES-only dataset we can see why the model latches onto _Experience_ as the biggest predictor for whether an enemy is a boss or not.  Over 90% of non-bosses give the player some experience upon being defeated, while only 1% of bosses do (side note: the only boss to give experience is the "Hell's Rider" enemy, the mounted soldier patrolling the wintry peaks above Narshe during Kefka's World of Balance assault).  The same goes for _Gil_ as well, with bosses giving none.
 
 The feature importances remain the same as well, with slightly increased _Experience_ importance and zero importance for Dragon Den.
 
 The classification results improve as well, showing that the SNES-only database is slightly easier to make predictions on because of the lack of experience-giving bosses.  With a mean test F1 score of 96.87% from fifteen randomized runs, it's clear we can detect whether an enemy would be a boss or not in the original SNES version of Final Fantasy VI.
+
 
 ###### SNES Enemies Only Mean Predictions
 Here are the results from running the model fifteen times with only the SNES enemies list.
@@ -177,7 +179,7 @@ We'd think bosses would have higher values in all stats than normal enemies, but
 _(Hint: if named Jonpaul, P > .99)_  
 For each enemy in the database the model makes a prediction: is this enemy a boss or not?  While the final classification is binary (_yes_ or _no_), the degree to which the model "believes" in this classification is not.  For each enemy the model assigns a probability that they are indeed what the model has classified them as; in other words, the model tells us _how confident_ it is about each enemy being a boss or not.  
 
-I thought it would be fun to look at these probabilities to see exactly which enemies the model says are the most "boss-like".  Here's a table of the top 15 most probable bosses according to this model, with a full list in the appendix at the end of this post.
+I thought it would be fun to look at these probabilities to see exactly which enemies the model says are the most "boss-like".  Here's a table of the fifteen most probable bosses according to this model (again, after aggregating fifteen randomly selected runs), with a full list in the appendix at the end of this post.
 
 ###### Most Probable Bosses
 Rank | SNES_Name        | Actual Boss? | Probability | Prediction | Correct? | Location
@@ -231,7 +233,7 @@ As an example if we measured the difference between bosses' _Experience_ given a
  Attribute    | Non-Bosses Mean | Bosses Mean | Larger | X-times Larger
 --------------|-----------------|-------------|--------|--------------
 Exp           | __1,029.4__     | 4.1         | Non    | __251.0x__
-Gil (No KatanaSoul) __*__ | __577.1__ | 53.8        | Non    | __10.7x__
+Gil (No KatanaSoul) __*__ | __577.1__ | 53.8  | Non    | __10.7x__
 HP            | 2,775.7         | __19,841__  | Boss   | __7.1x__
 MP            | 1,392.2         | __7,101.6__ | Boss   | __5.1x__
 Evasion       | 10.4            | 5.8         | Non    | 1.8x
@@ -246,11 +248,31 @@ Sample Size   | 272             | 96          | Non    | (2.8x)
 
 __*__ Only seven bosses give over 100 gil. Only one boss, _KatanaSoul_, gives appreciable gil.  In fact, he gives 30,000 Gil which not only skews the entire category for bosses but is also the _single largest purse rewarded by any enemy in the entire SNES game_ (second highest in the mobile versions).  Taking him out, the mean gil given by bosses becomes a paltry 53 gil which is far more representative of the other 95 Bosses.  
 
-This breakdown of the means per category between the two classes of enemies gives us great insight into what we could investigate with a hypothesis test.  It is not surprising to see the categories of the four largest percentage differences are also the four features the model identified as being most important in predicting whether an enemy is a boss or not.
+This breakdown of the means per category between the two classes of enemies gives us great insight into what we could investigate with a hypothesis test.  It is not surprising to see the categories of the four largest percentage differences are also the four features the model identified as being most important in predicting whether an enemy is a boss or not.  Thus the four features we'd like to test are the four largely different ones, and _Evasion_ because it might be close to being significant as well.
 
+The basic Z-test and t-test make the assumption that our population is normally distributed -- after all, that's what the Z-score and t-score mean: how far our observed sample mean is from the population's/other sample's mean _in a normal distribution_.   So, we need to test to see if our data is normally distributed.
 
-(in progress)
+To do this we can use a QQ plot to analyze the residuals of our data.  Keeping it simple, we want to see our data follow the straight line which would match the theoretical distribution (i.e. normal distribution in this case) our of data.  Since _HP_ and _MP_ are quite similar, I will only use _HP_.  
 
+###### QQ Plots for Normality
+![FF6 QQ Plots for important features](images/ff6_qq_plot.png)
+
+Well, that's not a good result.  Of the three features that were important for the model, none are normally distributed.  The QQ plot is just a visual check but is very instructive in this case.  To be fair, we saw above in the scatter plots and % Giving table that _Exp_ and _Gil_ are very much not normally distributed.  The QQ plots only confirm this.  _Defense_ is also the feature which is "most normal."  If the other features were also as close to normality we could do further tests like the Shapiro-Wilk analysis to try to quantify "how normal" they were.  But we don't even need to do that as they very clearly are not.
+
+![FF6 Histograms for important features](images/ff6_histograms.png)
+
+We can still do the Z-test (since we do have over 30 samples and know the standard deviations), but its meaning is left uncertain.  If the results say that the mean for _Exp_ for non-bosses is 10σ greater than the mean for bosses, what meaning does that _really_ have when the underlying distribution itself isn't even remotely close to normal?  Pushing it farther is beyond the scope of this write-up, so instead we will simply carry out the tests per normal just to get a sense of these categories between  bosses and non-bosses for demonstrational purposes.
+
+###### Z-Scores
+Category | Boss Z Score (σ)
+---------|-----------------
+Exp.     | -10.04
+Gil      | -7.97
+HP       | 9.08
+MP       | 4.75
+Defense  | -1.59
+
+Pretending these features did come from roughly normal distributions, we'd be able to reject the null hypothesis that bosses and non-bosses have indistinguishable statistics in the four most "important" categories according to our model.  Again, intuitively this fits well -- the model deemed these as the most predictive features so it is sensible to see that there are real distinctions between bosses and non-bosses in them.  Defense would not pass our threshold of the 95-percent confidence level, meaning we could not say statistically that a boss' defense was different than a non-bosses beyond chance.
 
 
 <BR>

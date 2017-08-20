@@ -2,11 +2,13 @@ import pandas as pd
 import numpy as np
 import re
 import time
+import math
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.ensemble import RandomForestClassifier
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, precision_score, recall_score, f1_score
+import scipy.stats as stats
 from collections import Counter, defaultdict
 
 
@@ -345,6 +347,31 @@ def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True, 
     # plt.close()
 
 
+def qq_plots(data=[], dist='norm'):
+    fig = plt.figure(figsize=(10,8))
+
+    for feat in range(len(data)):
+        plots = math.ceil(len(data)/2)
+        ax = fig.add_subplot(plots, 2, feat+1)
+        stats.probplot(data[feat].values, dist=dist, plot=ax)
+        ax.set_title("{} QQ Plot".format(data[feat].name))
+    fig.tight_layout()
+    plt.show()
+
+
+def hist_plots(data=[], bins=25, color=sns.color_palette('deep')[4]):
+    fig = plt.figure(figsize=(10,8))
+    for feat in range(len(data)):
+        plots = math.ceil(len(data)/2)
+        ax = fig.add_subplot(plots, 2, feat+1)
+        ax.hist(data[feat].values, bins=bins, color=color)
+        ax.set_title("{} Histogram".format(data[feat].name))
+    fig.tight_layout()
+    plt.show()
+
+
+
+
 
 
 
@@ -355,7 +382,7 @@ if __name__ == '__main__':
     # plot_scatter(df_snes, 'Defense', 'Magic_Defense', 'Boss', annotate=False, mean=True)
 
 
-    mean_frame = report_mean_results(df_snes, n=15, train_size=.7, p_thresh=0, random_state=None)
+    # mean_frame = report_mean_results(df_snes, n=15, train_size=.7, p_thresh=0, random_state=None)
 
     # target = 'Boss'
     # X, y, df_mod = prep_data(df_snes, target)#
@@ -368,42 +395,3 @@ if __name__ == '__main__':
     # report_importances(mod.feature_importances_, df_train)
     # mainn = report_probabilities(df_raw, mod.predict_proba(X_train)[:, 1], target, p_thresh=.75)
     # report_scores(mod, X_train, X_test, y_train, y_test)
-
-
-#
-# hypothesis test for boss hp v non-boss/population?
-# In [28]: df['HP'].describe()
-# Out[28]:
-# count      406.000000
-# mean     10317.492611
-# std      16014.262710
-# min          1.000000
-# 25%        515.000000
-# 50%       2761.000000
-# 75%      11450.000000
-# max      65500.000000
-# Name: HP, dtype: float64
-#
-# In [29]: df_snes['HP'].describe()
-# Out[29]:
-# count      366.000000
-# mean      7251.898907
-# std      12627.050617
-# min          1.000000
-# 25%        456.500000
-# 50%       2000.000000
-# 75%       7000.000000
-# max      63000.000000
-# Name: HP, dtype: float64
-#
-# In [30]: dfb['HP'].describe()
-# Out[30]:
-# count       96.000000
-# mean     19841.197917
-# std      18172.690523
-# min        100.000000
-# 25%       3300.000000
-# 50%      14500.500000
-# 75%      30000.000000
-# max      63000.000000
-# Name: HP, dtype: float64
