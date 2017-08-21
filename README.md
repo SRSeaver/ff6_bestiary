@@ -152,9 +152,9 @@ Std.    | .0047    | .0124   | -.0076
 With the results from our model in hand, it is usually fun to do some visual inspection of the features or trends reported above.
 
 ##### Experience as Level Increases
-With bosses colored red and non-bosses blue, we see that bosses just don't give experience regardless of how high their level is.  As non-bosses become higher in level they give more experience.  This plot confirms what our model picked up.
+With bosses colored red and non-bosses blue, we see that bosses just don't give experience regardless of how high their level is.  As non-bosses become higher in level they give more experience.  This plot confirms what our model picked up, as shown in their trend line that climbs rapidly.  Bosses would have a flat trend line, of course.
 
-![Most predictive feature for bosses is EXP -- they give none](images/ff6_boss_lvl_exp.png)
+![Most predictive feature for bosses is EXP -- they give none](images/ff6_boss_lvl_exp_trend.png)
 
 
 ##### Bosses Have More HP and MP
@@ -260,7 +260,7 @@ Well, that's not a good result.  Of the three features that were important for t
 
 ![FF6 Histograms for important features](images/ff6_histograms.png)
 
-We can still do the Z-test (since we do have over 30 samples and know the standard deviations), but its meaning is left uncertain.  If the results say that the mean for _Exp_ for non-bosses is 10σ greater than the mean for bosses, what meaning does that _really_ have when the underlying distribution itself isn't even remotely close to normal?  Pushing it farther is beyond the scope of this write-up, so instead we will simply carry out the tests per normal just to get a sense of these categories between  bosses and non-bosses for demonstrational purposes.
+We can still do the Z-test (since we do have over 30 samples and know the standard deviations), but its meaning is left uncertain.  If the results say that the mean for _Exp_ for non-bosses is 10σ greater than the mean for bosses, what meaning does that _really_ have when the underlying distribution itself isn't even remotely close to normal?  Pushing it farther is beyond the scope of this write-up, so instead we will simply carry out the tests per normal just to get a sense of these categories between bosses and non-bosses for demonstrational purposes.
 
 ###### Z-Scores
 Category | Boss Z Score (σ)
@@ -271,7 +271,7 @@ HP       | 9.08
 MP       | 4.75
 Defense  | -1.59
 
-Pretending these features did come from roughly normal distributions, we'd be able to reject the null hypothesis that bosses and non-bosses have indistinguishable statistics in the four most "important" categories according to our model.  Again, intuitively this fits well -- the model deemed these as the most predictive features so it is sensible to see that there are real distinctions between bosses and non-bosses in them.  Defense would not pass our threshold of the 95-percent confidence level, meaning we could not say statistically that a boss' defense was different than a non-bosses beyond chance.
+Pretending these features did come from roughly normal distributions, we'd be able to reject the null hypothesis that bosses and non-bosses have indistinguishable statistics in the four most "important" categories according to our model.  Again, intuitively this fits well -- the model deemed these as the most predictive features so it is sensible to see that there are real distinctions between bosses and non-bosses in them.  Defense, the one variable whose roughly Gaussian distribution makes this hypothesis test valid, just misses passing our threshold of the 95-percent confidence level (-1.65), meaning we could not say statistically that a boss' defense was different than a non-bosses beyond chance.
 
 
 ### To-Do

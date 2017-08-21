@@ -319,7 +319,15 @@ def plot_importances(mod, col_labels=None, importances=None, n_feats=None, err=F
     plt.show()
 
 
-def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True, mean=True):
+def add_trendline(df, x_axis, y_axis, deg=1, mask_var='Boss'):
+    mask = df[mask_var] == 0
+    z = np.polyfit(x=df.loc[mask, x_axis], y=df.loc[mask, y_axis], deg=deg)
+    p = np.poly1d(z)
+    df.loc[mask, 'Trendline'] = p(df.loc[mask, x_axis])
+    return df
+
+
+def plot_scatter(df, x_axis='Level', y_axis='HP', mask_var='Boss', annotate=True, mean=True, trendline=True):
     x = df[x_axis].values
     y = df[y_axis].values
     mask = df[mask_var] == 1
@@ -337,6 +345,12 @@ def plot_scatter(df, x_axis='Lvl', y_axis='HP', mask_var='Boss', annotate=True, 
     if mean:
         plt.axhline(np.mean(y), linestyle='--', color='k', alpha=.4, label='mean')
         plt.axvline(np.mean(x), linestyle='--', color='k', alpha=.4)
+
+    if trendline:
+        trend = df.set_index(x_axis).copy()
+        trend = trend.loc[pd.notnull(trend['Trendline']), 'Trendline'].sort_index()
+        ax.plot(trend, color='#144199', linewidth=1.75, linestyle='-', label='trendline')
+
     plt.title("SNES-only Enemies of Final Fantasy VI")
     plt.xlabel(x_axis)
     plt.ylabel(y_axis)
@@ -376,7 +390,8 @@ if __name__ == '__main__':
     monster_dict = load_text('data/FF6_bestiary.txt')
     df_raw = make_df(monster_dict)
     df_snes = make_snes_df(df_raw)
-    # plot_scatter(df_snes, 'Defense', 'Magic_Defense', 'Boss', annotate=False, mean=True)
+    df_snes = add_trendline(df_snes, 'Level', 'Exp', deg=2, mask_var='Boss')
+    plot_scatter(df_snes, 'Level', 'Exp', 'Boss', annotate=False, mean=True)
     # qq_plots([df_snes['Exp'], df_snes['Gil'], df_snes['HP'], df_snes['Defense']])
     # hist_plots([df_snes['Exp'], df_snes['Gil'], df_snes['HP'], df_snes['Defense']], bins=30, color=sns.color_palette('deep')[3])
 
